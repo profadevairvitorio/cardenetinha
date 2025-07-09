@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif; margin: 0; background-color: #f4f4f4; color: #333;
+}
+main { padding-top: 20px; }
+nav {
+    background-color: #333; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center;
+}
+nav a { color: white; text-decoration: none; margin: 0 10px; }
+nav a.nav-brand { font-weight: bold; font-size: 1.2rem; }
+.container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+.form-container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; }
+.form-control { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+.checkbox { display: flex; align-items: center; }
+.checkbox input { margin-right: 5px; }
+.btn {
+    background-color: #5cb85c; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 1rem;
+}
+.btn:hover { background-color: #4cae4c; }
+.error-text { color: red; font-size: 0.8em; }
+.alert { padding: 15px; margin: 20px auto; border: 1px solid transparent; border-radius: 4px; max-width: 800px; }
+.alert-success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
+.alert-danger { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+.alert-info { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; }

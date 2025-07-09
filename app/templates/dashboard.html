@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Painel do Usuário</h1>
+        <h2>Olá, {{ current_user.username }}!</h2>
+        <p>Esta é uma página protegida, visível apenas para usuários logados.</p>
+        <p>Seu email registrado é: {{ current_user.email }}</p>
+    </div>
+{% endblock %}
