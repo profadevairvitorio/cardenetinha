@@ -1,9 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container">
+    <div class="container mt-5">
         <h1>Painel do Usuário</h1>
         <h2>Olá, {{ current_user.username }}!</h2>
         <p>Esta é uma página protegida, visível apenas para usuários logados.</p>
         <p>Seu email registrado é: {{ current_user.email }}</p>
+
+        {% if last_account %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    Última Conta Criada
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ last_account.name_account }}</h5>
+                    <p class="card-text">Saldo: R$ {{ "%.2f"|format(last_account.balance) }}</p>
+                    {% if last_account.transactions %}
+                        <p class="card-text"><small class="text-muted">Última modificação: {{ last_account.transactions[0].date.strftime('%d/%m/%Y %H:%M') }}</small></p>
+                    {% else %}
+                        <p class="card-text"><small class="text-muted">Nenhuma transação ainda.</small></p>
+                    {% endif %}
+                    <a href="{{ url_for('main.account_detail', account_id=last_account.id) }}" class="btn btn-primary">Ver Detalhes da Conta</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-4" role="alert">
+                Você ainda não tem nenhuma conta. <a href="{{ url_for('main.new_account') }}">Crie uma agora!</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
