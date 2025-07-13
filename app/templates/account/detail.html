@@ -56,6 +56,14 @@
                         {% endfor %}
                     </div>
 
+                    <div class="mb-4">
+                        {{ form.category_id.label(class="form-label") }}
+                        {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                        {% for error in form.category_id.errors %}
+                            <div class="invalid-feedback"><span>{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
                     <div class="d-grid">
                        {{ form.submit(class="btn btn-primary") }}
                     </div>
@@ -70,4 +78,12 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/detail.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#category_id').select2({
+            placeholder: "Selecione ou digite uma categoria",
+            allowClear: true
+        });
+    });
+</script>
 {% endblock %}
