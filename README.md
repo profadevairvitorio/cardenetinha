@@ -27,8 +27,10 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 
 -   [x] **Autenticação de Usuários:** Sistema seguro de registro, login e logout.
 -   [x] **Banco de Dados SQLite:** Armazenamento leve e eficiente dos dados do usuário.
--   [ ] **(Em desenvolvimento) Gestão de Transações:** Cadastro de receitas e despesas de forma rápida.
--   [ ] **(Em desenvolvimento) Dashboard Visual:** Gráficos e relatórios para uma análise intuitiva das finanças.
+-   [x] **Gestão de Contas:** Crie, edite, desabilite e visualize suas contas financeiras.
+-   [x] **Gestão de Transações:** Registre transações de entrada e saída, com atualização automática do saldo da conta.
+-   [x] **Histórico de Transações Paginado:** Visualize o histórico detalhado de transações por conta, com paginação.
+-   [x] **Dashboard:** Visão geral com informações da última conta criada.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
 
@@ -39,13 +41,14 @@ O projeto foi construído utilizando as seguintes tecnologias:
 * **Backend:**
     * [Python 3](https://www.python.org/)
     * [Flask](https://flask.palletsprojects.com/)
-    * [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/) (para interação com o banco de dados)
-    * [Flask-Login](https://flask-login.readthedocs.io/) (para gerenciamento de sessões de usuário)
-    * [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/) (para hashing de senhas)
+    * [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)
+    * [Flask-Login](https://flask-login.readthedocs.io/)
+    * [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/)
 * **Banco de Dados:**
     * [SQLite 3](https://www.sqlite.org/index.html)
 * **Frontend:**
     * HTML5, CSS3, JavaScript
+    * [Bootstrap 5](https://getbootstrap.com/)
 
 ## Como Iniciar
 
@@ -98,16 +101,27 @@ Antes de começar, você vai precisar ter as seguintes ferramentas instaladas em
 ```
 cardenetinha/
 ├── app/                
-│   ├── init.py              
+│   ├── __init__.py              
 │   ├── models.py                
 │   ├── routes.py               
+│   ├── forms.py
 │   ├── static/                  
-│   │   └── css/
-│   │       └── style.css
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   └── js/
+│   │       └── detail.js
 │   └── templates/               
 │       ├── base.html
+│       ├── index.html
 │       ├── login.html
-│       └── register.html
+│       ├── register.html
+│       ├── account/
+│       │   ├── index.html
+│       │   ├── new.html
+│       │   ├── edit.html
+│       │   └── detail.html
+│       └── transaction/
+│           └── history.html
 ├── venv/                        
 ├── .gitignore                   
 ├── requirements.txt             
