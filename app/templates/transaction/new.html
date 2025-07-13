@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-6">
+                    <h3 class="card-title text-center mb-4">Registrar Nova Transação</h3>
+
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), placeholder="Ex: Compras no mercado, Salário") }}
+                            {% for error in form.description.errors %}
+                                <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.amount.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.amount(class="form-control" + (" is-invalid" if form.amount.errors else ""), placeholder="0.00") }}
+                                {% for error in form.amount.errors %}
+                                    <div class="invalid-feedback"><span>{{ error }}</span></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.type.label(class="form-label") }}
+                            {{ form.type(class="form-select" + (" is-invalid" if form.type.errors else "")) }}
+                            {% for error in form.type.errors %}
+                                <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.account_id.label(class="form-label") }}
+                            {{ form.account_id(class="form-select" + (" is-invalid" if form.account_id.errors else "")) }}
+                            {% for error in form.account_id.errors %}
+                                <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-grid">
+                           {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body.entrada-bg {
+        background-color: #d4edda; /* Verde claro para entrada */
+    }
+    body.saida-bg {
+        background-color: #f8d7da; /* Vermelho claro para saída */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('type');
+        const body = document.body;
+
+        function updateBackground() {
+            body.classList.remove('entrada-bg', 'saida-bg');
+            if (typeSelect.value === 'entrada') {
+                body.classList.add('entrada-bg');
+            } else if (typeSelect.value === 'saida') {
+                body.classList.add('saida-bg');
+            }
+        }
+
+        // Initial call to set background based on default value
+        updateBackground();
+
+        // Update background on change
+        typeSelect.addEventListener('change', updateBackground);
+    });
+</script>
+{% endblock %}
