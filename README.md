@@ -30,6 +30,7 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 -   [x] **Gestão de Contas:** Crie, edite, desabilite e visualize suas contas financeiras.
 -   [x] **Gestão de Transações:** Registre transações de entrada e saída, com atualização automática do saldo da conta.
 -   [x] **Histórico de Transações Paginado:** Visualize o histórico detalhado de transações por conta, com paginação.
+-   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
 -   [x] **Dashboard:** Visão geral com informações da última conta criada.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
@@ -120,6 +121,10 @@ cardenetinha/
 │       │   ├── new.html
 │       │   ├── edit.html
 │       │   └── detail.html
+│       ├── category/
+│       │   ├── edit.html
+│       │   ├── index.html
+│       │   └── new.html
 │       └── transaction/
 │           └── history.html
 ├── venv/                        
