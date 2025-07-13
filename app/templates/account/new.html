@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-6">
+                    <h3 class="card-title text-center mb-4">Adicionar Nova Conta</h3>
+
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.name_account.label(class="form-label") }}
+                            {{ form.name_account(class="form-control" + (" is-invalid" if form.name_account.errors else ""), placeholder="Ex: Conta Corrente, Carteira") }}
+                            {% for error in form.name_account.errors %}
+                                <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.initial_balance.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.initial_balance(class="form-control" + (" is-invalid" if form.initial_balance.errors else ""), placeholder="0.00") }}
+                                {% for error in form.initial_balance.errors %}
+                                    <div class="invalid-feedback"><span>{{ error }}</span></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                           {{ form.submit(class="btn btn-secondary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
