@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - Meu App Flask</title>
+    <title>{{ title }} - Cardenetinha</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
         <nav>
-            <a href="{{ url_for('main.index') }}" class="nav-brand">Meu App</a>
+            <a href="{{ url_for('main.index') }}" class="nav-brand">Cardenetinha</a>
             <div class="nav-links">
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('main.dashboard') }}">Painel</a>
