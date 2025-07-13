@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Histórico de Transações - {{ account.name_account }}</h1>
+        <a href="{{ url_for('main.account_detail', account_id=account.id) }}" class="btn btn-secondary">Voltar para Detalhes da Conta</a>
+    </div>
+
+    {% if transactions.items %}
+        <ul class="list-group mb-4">
+            {% for transaction in transactions.items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ transaction.description }} ({{ transaction.type }})
+                    </div>
+                    <span class="badge bg-{{ 'success' if transaction.type == 'entrada' else 'danger' }} rounded-pill">
+                        R$ {{ "%.2f"|format(transaction.amount) }}
+                    </span>
+                    <small>{{ transaction.date.strftime('%d/%m/%Y %H:%M') }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if transactions.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.prev_num) }}">Anterior</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Anterior</a>
+                    </li>
+                {% endif %}
+
+                {% for page_num in transactions.iter_pages() %}
+                    {% if page_num %}
+                        {% if transactions.page == page_num %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ page_num }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=page_num) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if transactions.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.next_num) }}">Próxima</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Próxima</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Nenhuma transação encontrada para esta conta.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
