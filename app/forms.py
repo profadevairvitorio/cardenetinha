@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, DecimalField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional, NumberRange
-from .models import User, Account
+from .models import User, Account, Category
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -62,4 +62,26 @@ class TransactionForm(FlaskForm):
     description = StringField('Descrição', validators=[DataRequired(), Length(max=200)])
     amount = DecimalField('Valor', places=2, validators=[DataRequired(), NumberRange(min=0.01)])
     type = SelectField('Tipo', choices=[('entrada', 'Entrada'), ('saida', 'Saída')], validators=[DataRequired()])
+    category_id = SelectField('Categoria', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Registrar Transação')
+
+    def __init__(self, *args, **kwargs):
+        super(TransactionForm, self).__init__(*args, **kwargs)
+        if 'user' in kwargs:
+            user = kwargs['user']
+            self.category_id.choices = [(c.id, c.name) for c in Category.query.filter_by(user_id=user.id).order_by(Category.name).all()]
+
+class CategoryForm(FlaskForm):
+    name = StringField('Nome da Categoria', validators=[DataRequired(), Length(min=2, max=100)])
+    submit = SubmitField('Salvar Categoria')
+
+    def __init__(self, user_id, original_name=None, *args, **kwargs):
+        super(CategoryForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name
+        self.user_id = user_id
+
+    def validate_name(self, name):
+        if name.data != self.original_name:
+            category = Category.query.filter_by(name=name.data, user_id=self.user_id).first()
+            if category:
+                raise ValidationError('Esta categoria já existe.')
