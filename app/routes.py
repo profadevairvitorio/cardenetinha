@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, flash, redirect, url_for, abort, r
 from flask_login import login_required, current_user
 
 from app import db
-from app.forms import AccountForm, EditAccountForm, TransactionForm
-from app.models import Account, Transaction
+from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm
+from app.models import Account, Transaction, Category
 
 main_bp = Blueprint('main', __name__)
 
@@ -25,6 +25,7 @@ def accounts():
     return render_template('account/index.html', title='Suas Contas', accounts=user_accounts)
 
 
+@main_bp.route('/account/new', methods=['GET', 'POST'])
 @main_bp.route('/account/new', methods=['GET', 'POST'])
 @login_required
 def new_account():
@@ -84,7 +85,7 @@ def account_detail(account_id):
     if account is None or account.user_id != current_user.id:
         abort(404)
 
-    form = TransactionForm()
+    form = TransactionForm(user=current_user)
 
     if form.validate_on_submit():
         try:
@@ -92,7 +93,8 @@ def account_detail(account_id):
                 description=form.description.data,
                 amount=form.amount.data,
                 type=form.type.data,
-                account_id=account.id
+                account_id=account.id,
+                category_id=form.category_id.data
             )
             db.session.add(new_transaction)
             db.session.flush()
@@ -119,3 +121,42 @@ def transaction_history(account_id):
     transactions = Transaction.query.filter_by(account_id=account.id).order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
     return render_template('transaction/history.html', title=f'Histórico de Transações - {account.name_account}', account=account, transactions=transactions)
+
+
+@main_bp.route('/categories')
+@login_required
+def categories():
+    user_categories = Category.query.filter_by(user_id=current_user.id).order_by(Category.name).all()
+    return render_template('category/index.html', title='Gerenciar Categorias', categories=user_categories)
+
+
+@main_bp.route('/category/new', methods=['GET', 'POST'])
+@login_required
+def new_category():
+    form = CategoryForm(user_id=current_user.id)
+    if form.validate_on_submit():
+        new_category = Category(name=form.name.data, user_id=current_user.id)
+        db.session.add(new_category)
+        db.session.commit()
+        flash('Categoria criada com sucesso!', 'success')
+        return redirect(url_for('main.categories'))
+    return render_template('category/new.html', title='Nova Categoria', form=form)
+
+
+@main_bp.route('/category/edit/<int:category_id>', methods=['GET', 'POST'])
+@login_required
+def edit_category(category_id):
+    category = db.session.get(Category, category_id)
+    if category is None or category.user_id != current_user.id:
+        abort(404)
+
+    form = CategoryForm(original_name=category.name, user_id=current_user.id)
+    if form.validate_on_submit():
+        category.name = form.name.data
+        db.session.commit()
+        flash('Categoria atualizada com sucesso!', 'success')
+        return redirect(url_for('main.categories'))
+    elif request.method == 'GET':
+        form.name.data = category.name
+
+    return render_template('category/edit.html', title='Editar Categoria', form=form, category=category)
