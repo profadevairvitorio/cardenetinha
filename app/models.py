@@ -45,9 +45,20 @@ class Transaction(db.Model):
     type = db.Column(db.String(7), nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship('Category', backref='transactions', lazy=True)
 
     def __repr__(self):
         return f"<Transaction(description='{self.description}', amount={self.amount:.2f}, type='{self.type}')>"
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"<Category(name='{self.name}')>"
 
 @event.listens_for(Transaction, 'after_insert')
 def update_account_balance(mapper, connection, target):
