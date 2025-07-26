@@ -31,7 +31,10 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 -   [x] **Gestão de Transações:** Registre transações de entrada e saída, com atualização automática do saldo da conta.
 -   [x] **Histórico de Transações Paginado:** Visualize o histórico detalhado de transações por conta, com paginação.
 -   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
--   [x] **Dashboard:** Visão geral com informações da última conta criada.
+-   [x] **Dashboard Interativo:**
+    -   Visão geral com total de receitas, despesas e saldo.
+    -   Filtros por mês e ano para análise temporal.
+    -   Gráfico de pizza com a distribuição de despesas por categoria.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
 
@@ -50,6 +53,9 @@ O projeto foi construído utilizando as seguintes tecnologias:
 * **Frontend:**
     * HTML5, CSS3, JavaScript
     * [Bootstrap 5](https://getbootstrap.com/)
+    * [Chart.js](https://www.chartjs.org/) para visualização de dados.
+    * [Select2](https://select2.org/) para caixas de seleção aprimoradas.
+    * *Bibliotecas como Bootstrap, Select2 e jQuery são carregadas via CDN.*
 
 ## Como Iniciar
 
@@ -87,15 +93,21 @@ Antes de começar, você vai precisar ter as seguintes ferramentas instaladas em
     ```bash
     pip install -r requirements.txt
     ```
-    *(Se você não tiver um `requirements.txt`, pode gerá-lo com `pip freeze > requirements.txt` após instalar as bibliotecas individualmente).*
 
-4.  **Execute a aplicação:**
+4.  **Configure as variáveis de ambiente:**
+    Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
+    ```bash
+    cp .env.example .env
+    ```
+    Abra o arquivo `.env` e preencha as variáveis necessárias, como a `SECRET_KEY`.
+
+5.  **Execute a aplicação:**
     ```bash
     python run.py
     ```
     *O banco de dados `site.db` será criado automaticamente na raiz do projeto no primeiro acesso que envolver uma operação de banco de dados.*
 
-5.  **Acesse no seu navegador:**
+6.  **Acesse no seu navegador:**
     Abra seu navegador e vá para `http://127.0.0.1:5000/`.
 
 ## Estrutura do Projeto
@@ -113,6 +125,7 @@ cardenetinha/
 │   │       └── detail.js
 │   └── templates/               
 │       ├── base.html
+│       ├── dashboard.html
 │       ├── index.html
 │       ├── login.html
 │       ├── register.html
