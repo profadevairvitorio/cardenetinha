@@ -8,13 +8,11 @@ login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
 login_manager.login_message = 'Por favor, faça login para acessar esta página.'
 
-def create_app():
-    """Cria e configura uma instância da aplicação Flask."""
-    app = Flask(__name__, instance_relative_config=True)
+from config import Config
 
-    app.config['SECRET_KEY'] = 'secret'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app(config_class=Config):
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object(config_class)
 
     db.init_app(app)
     login_manager.init_app(app)
