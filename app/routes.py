@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, abort, request
 from flask_login import login_required, current_user
+from sqlalchemy import func, extract
+from datetime import datetime
 
 from app import db
 from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm
@@ -14,8 +16,55 @@ def index():
 @main_bp.route('/dashboard')
 @login_required
 def dashboard():
-    last_account = Account.query.filter_by(user_id=current_user.id, is_active=True).order_by(Account.id.desc()).first()
-    return render_template('dashboard.html', title='Painel', last_account=last_account)
+    current_month = datetime.utcnow().month
+    current_year = datetime.utcnow().year
+
+    month = request.args.get('month', current_month, type=int)
+    year = request.args.get('year', current_year, type=int)
+    account_id = request.args.get('account_id', type=int)
+
+    accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
+
+    query = db.session.query(
+        Category.name,
+        Transaction.type,
+        func.sum(Transaction.amount).label('total_amount')
+    ).join(Transaction.category).join(Account).filter(
+        Account.user_id == current_user.id,
+        extract('month', Transaction.date) == month,
+        extract('year', Transaction.date) == year
+    )
+
+    if account_id:
+        query = query.filter(Account.id == account_id)
+
+    transactions = query.group_by(Category.name, Transaction.type).all()
+
+    income_by_category = {}
+    expenses_by_category = {}
+    total_income = 0
+    total_expenses = 0
+
+    for category_name, trans_type, total_amount in transactions:
+        if trans_type == 'entrada':
+            income_by_category[category_name] = total_amount
+            total_income += total_amount
+        elif trans_type == 'saida':
+            expenses_by_category[category_name] = total_amount
+            total_expenses += total_amount
+
+    return render_template(
+        'dashboard.html',
+        title='Dashboard',
+        income_by_category=income_by_category,
+        expenses_by_category=expenses_by_category,
+        total_income=total_income,
+        total_expenses=total_expenses,
+        month=month,
+        year=year,
+        accounts=accounts,
+        selected_account_id=account_id
+    )
 
 
 @main_bp.route('/accounts')
@@ -25,7 +74,6 @@ def accounts():
     return render_template('account/index.html', title='Suas Contas', accounts=user_accounts)
 
 
-@main_bp.route('/account/new', methods=['GET', 'POST'])
 @main_bp.route('/account/new', methods=['GET', 'POST'])
 @login_required
 def new_account():
