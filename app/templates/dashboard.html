@@ -1,31 +1,99 @@
 {% extends "base.html" %}
-{% block content %}
-    <div class="container mt-5">
-        <h1>Painel do Usuário</h1>
-        <h2>Olá, {{ current_user.username }}!</h2>
-        <p>Esta é uma página protegida, visível apenas para usuários logados.</p>
-        <p>Seu email registrado é: {{ current_user.email }}</p>
 
-        {% if last_account %}
-            <div class="card mt-4">
-                <div class="card-header">
-                    Última Conta Criada
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Dashboard de {{ current_user.username }}</h1>
+
+    <form method="GET" action="{{ url_for('main.dashboard') }}" class="form-inline mb-4">
+        <label for="month" class="mr-2">Mês:</label>
+        <select name="month" id="month" class="form-control mr-2">
+            {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+        <label for="year" class="mr-2">Ano:</label>
+        <input type="number" name="year" id="year" value="{{ year }}" class="form-control mr-2">
+        <label for="account_id" class="mr-2">Conta:</label>
+        <select name="account_id" id="account_id" class="form-control mr-2">
+            <option value="">Todas as Contas</option>
+            {% for account in accounts %}
+                <option value="{{ account.id }}" {% if account.id == selected_account_id %}selected{% endif %}>{{ account.name_account }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4>Receitas</h4>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ last_account.name_account }}</h5>
-                    <p class="card-text">Saldo: R$ {{ "%.2f"|format(last_account.balance) }}</p>
-                    {% if last_account.transactions %}
-                        <p class="card-text"><small class="text-muted">Última modificação: {{ last_account.transactions[0].date.strftime('%d/%m/%Y %H:%M') }}</small></p>
-                    {% else %}
-                        <p class="card-text"><small class="text-muted">Nenhuma transação ainda.</small></p>
-                    {% endif %}
-                    <a href="{{ url_for('main.account_detail', account_id=last_account.id) }}" class="btn btn-primary">Ver Detalhes da Conta</a>
+                    <h5 class="card-title">Total: R$ {{ "%.2f"|format(total_income) }}</h5>
+                    <canvas id="incomeChart"></canvas>
                 </div>
             </div>
-        {% else %}
-            <div class="alert alert-info mt-4" role="alert">
-                Você ainda não tem nenhuma conta. <a href="{{ url_for('main.new_account') }}">Crie uma agora!</a>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>Despesas</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Total: R$ {{ "%.2f"|format(total_expenses) }}</h5>
+                    <canvas id="expensesChart"></canvas>
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        var incomeChart = new Chart(incomeCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ income_by_category.keys()|list|tojson }},
+                datasets: [{
+                    label: 'Receitas por Categoria',
+                    data: {{ income_by_category.values()|list|tojson }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var expensesCtx = document.getElementById('expensesChart').getContext('2d');
+        var expensesChart = new Chart(expensesCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ expenses_by_category.keys()|list|tojson }},
+                datasets: [{
+                    label: 'Despesas por Categoria',
+                    data: {{ expenses_by_category.values()|list|tojson }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}
