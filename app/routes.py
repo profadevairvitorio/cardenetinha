@@ -25,6 +25,18 @@ def dashboard():
 
     accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
 
+    global_balance = 0
+    if account_id:
+        account = db.session.get(Account, account_id)
+        if account and account.user_id == current_user.id:
+            global_balance = account.balance
+    else:
+        total_balance_query = db.session.query(func.sum(Account.balance)).filter(
+            Account.user_id == current_user.id, Account.is_active == True
+        )
+        total_balance = total_balance_query.scalar() or 0
+        global_balance = total_balance
+
     query = db.session.query(
         Category.name,
         Transaction.type,
@@ -63,7 +75,8 @@ def dashboard():
         month=month,
         year=year,
         accounts=accounts,
-        selected_account_id=account_id
+        selected_account_id=account_id,
+        global_balance=global_balance
     )
 
 
