@@ -55,7 +55,6 @@ O projeto foi construído utilizando as seguintes tecnologias:
     * [Bootstrap 5](https://getbootstrap.com/)
     * [Chart.js](https://www.chartjs.org/) para visualização de dados.
     * [Select2](https://select2.org/) para caixas de seleção aprimoradas.
-    * *Bibliotecas como Bootstrap, Select2 e jQuery são carregadas via CDN.*
 
 ## Como Iniciar
 
