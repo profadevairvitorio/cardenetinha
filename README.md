@@ -171,4 +171,5 @@ Se desejar contribuir com o projeto, siga o fluxo de trabalho abaixo, que é um 
 
 ## Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está licenciado sob a **Creative Commons Attribution-NonCommercial 4.0 International Public License (CC BY-NC 4.0)**.
+Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
