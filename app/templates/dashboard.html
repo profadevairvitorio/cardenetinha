@@ -23,6 +23,19 @@
         <button type="submit" class="btn btn-primary">Filtrar</button>
     </form>
 
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card text-center">
+                <div class="card-header">
+                    Saldo Global
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">R$ {{ "%.2f"|format(global_balance) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="card">
