@@ -7,6 +7,13 @@
         <a href="{{ url_for('main.account_detail', account_id=account.id) }}" class="btn btn-secondary">Voltar para Detalhes da Conta</a>
     </div>
 
+    <form method="GET" action="{{ url_for('main.transaction_history', account_id=account.id) }}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Pesquisar por descrição, valor ou data (YYYY-MM-DD)" value="{{ search_query }}">
+            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </div>
+    </form>
+
     {% if transactions.items %}
         <table class="table table-striped">
             <thead>
@@ -35,7 +42,7 @@
             <ul class="pagination justify-content-center">
                 {% if transactions.has_prev %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.prev_num) }}">Anterior</a>
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.prev_num, search=search_query) }}">Anterior</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">
@@ -43,12 +50,12 @@
                     </li>
                 {% endif %}
 
-                {% for page_num in transactions.iter_pages() %}
+                {% for page_num in transactions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                     {% if page_num %}
                         {% if transactions.page == page_num %}
                             <li class="page-item active"><a class="page-link" href="#">{{ page_num }}</a></li>
                         {% else %}
-                            <li class="page-item"><a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=page_num) }}">{{ page_num }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=page_num, search=search_query) }}">{{ page_num }}</a></li>
                         {% endif %}
                     {% else %}
                         <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
@@ -57,7 +64,7 @@
 
                 {% if transactions.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.next_num) }}">Próxima</a>
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.next_num, search=search_query) }}">Próxima</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">

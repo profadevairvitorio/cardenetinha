@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, abort, request
 from flask_login import login_required, current_user
-from sqlalchemy import func, extract
+from sqlalchemy import func, extract, or_
 from datetime import datetime
 
 from app import db
@@ -179,9 +179,29 @@ def transaction_history(account_id):
 
     page = request.args.get('page', 1, type=int)
     per_page = 10
-    transactions = Transaction.query.filter_by(account_id=account.id).order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    search_query = request.args.get('search', '')
 
-    return render_template('transaction/history.html', title=f'Histórico de Transações - {account.name_account}', account=account, transactions=transactions)
+    query = Transaction.query.filter_by(account_id=account.id)
+
+    if search_query:
+        search_term = f"%{search_query}%"
+        query = query.filter(
+            or_(
+                Transaction.description.ilike(search_term),
+                func.cast(Transaction.amount, db.String).ilike(search_term),
+                func.strftime('%Y-%m-%d', Transaction.date).ilike(search_term)
+            )
+        )
+
+    transactions = query.order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+    return render_template(
+        'transaction/history.html',
+        title=f'Histórico de Transações - {account.name_account}',
+        account=account,
+        transactions=transactions,
+        search_query=search_query
+    )
 
 
 @main_bp.route('/categories')
