@@ -21,7 +21,7 @@
 
 ## Sobre o Projeto
 
-A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, porém poderosa, para o controle financeiro pessoal. Em vez de planilhas complexas ou aplicativos com excesso de funcionalidades, o Cardenetinha foca no essencial: registro rápido de transações, categorização automática e visualização clara dos dados para tomada de decisões inteligentes.
+A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, porém poderosa, para o controle financeiro pessoal. Em vez de planilhas complexas ou aplicativos com excesso de funcionalidades, o Cardenetinha foca no essencial: registro rápido de transações, categorização automática e visualização clara dos dados para tomada de decisões inteligentes, tudo isso com uma interface intuitiva e visualmente agradável.
 
 ## Funcionalidades
 
