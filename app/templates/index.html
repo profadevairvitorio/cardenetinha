@@ -1,6 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container">
-        <h1>Bem-vindo ao Cardenetinha!</h1>
+    <div class="container-fluid p-0">
+        <section class="hero-section bg-primary text-white text-center py-5">
+            <div class="container">
+                <h1 class="display-3 mb-4">Cardenetinha: Seu Controle Financeiro na Palma da Mão</h1>
+                <p class="lead mb-5">Organize suas finanças, acompanhe seus gastos e alcance seus objetivos financeiros com facilidade.</p>
+                <a class="btn btn-light btn-lg me-3" href="{{ url_for('auth.register') }}" role="button">Comece Agora Grátis</a>
+                <a class="btn btn-outline-light btn-lg" href="{{ url_for('auth.login') }}" role="button">Já tenho conta</a>
+            </div>
+        </section>
+
+        <section class="features-section py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">Por que escolher o Cardenetinha?</h2>
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <i class="bi bi-cash-stack feature-icon mb-3"></i>
+                                <h5 class="card-title">Controle de Gastos</h5>
+                                <p class="card-text">Registre suas despesas e receitas de forma rápida e intuitiva. Saiba exatamente para onde seu dinheiro está indo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <i class="bi bi-graph-up feature-icon mb-3"></i>
+                                <h5 class="card-title">Visão Clara</h5>
+                                <p class="card-text">Gráficos e relatórios detalhados para você ter uma visão completa da sua saúde financeira.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <i class="bi bi-piggy-bank feature-icon mb-3"></i>
+                                <h5 class="card-title">Metas Financeiras</h5>
+                                <p class="card-text">Defina e acompanhe suas metas de economia e investimento. Transforme seus sonhos em realidade.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section bg-light text-center py-5">
+            <div class="container">
+                <h2 class="mb-4">Pronto para tomar o controle das suas finanças?</h2>
+                <p class="lead mb-4">Junte-se a milhares de usuários que já estão transformando suas vidas financeiras com o Cardenetinha.</p>
+                <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}" role="button">Criar Minha Conta Grátis</a>
+            </div>
+        </section>
     </div>
 {% endblock %}

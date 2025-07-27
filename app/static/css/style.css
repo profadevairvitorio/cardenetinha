@@ -5,6 +5,66 @@ body {
 body.entrada-bg {
     background-color: #d4edda;
 }
+
 body.saida-bg {
     background-color: #f8d7da;
+}
+
+.hero-section {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    padding: 100px 0;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.hero-section h1 {
+    font-weight: 700;
+}
+
+.hero-section .btn {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+}
+
+.features-section {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.features-section h2 {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.features-section .card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.features-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #007bff;
+}
+
+.cta-section {
+    padding: 80px 0;
+    background-color: #e9ecef;
+}
+
+.cta-section h2 {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.cta-section .btn {
+    padding: 15px 40px;
+    font-size: 1.3rem;
+    border-radius: 30px;
 }
