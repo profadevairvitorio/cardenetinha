@@ -33,8 +33,11 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 -   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
 -   [x] **Dashboard Interativo:**
     -   Visão geral com total de receitas, despesas e saldo.
-    -   Filtros por mês e ano para análise temporal.
+    -   Filtros por mês, ano e conta para análise temporal.
     -   Gráfico de pizza com a distribuição de despesas por categoria.
+    -   Exibição do saldo global ou por conta selecionada.
+-   [x] **Pesquisa de Transações:**
+    -   Busca por descrição, valor ou data no histórico de transações.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
 
