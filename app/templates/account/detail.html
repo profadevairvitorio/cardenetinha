@@ -56,11 +56,25 @@
                         {% endfor %}
                     </div>
 
-                    <div class="mb-4">
+                    <div id="category-select-div" class="mb-4">
                         {{ form.category_id.label(class="form-label") }}
-                        {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                        <div class="input-group">
+                            {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                            <button id="new-category-btn" class="btn btn-outline-secondary" type="button">Nova</button>
+                        </div>
                         {% for error in form.category_id.errors %}
-                            <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            <div class="invalid-feedback d-block"><span>{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    <div id="new-category-div" class="mb-4" style="display: none;">
+                        {{ form.new_category.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.new_category(class="form-control" + (" is-invalid" if form.new_category.errors else ""), placeholder="Ex: Lazer, Educação") }}
+                            <button id="cancel-new-category-btn" class="btn btn-outline-danger" type="button">Cancelar</button>
+                        </div>
+                        {% for error in form.new_category.errors %}
+                            <div class="invalid-feedback d-block"><span>{{ error }}</span></div>
                         {% endfor %}
                     </div>
 

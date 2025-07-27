@@ -150,12 +150,26 @@ def account_detail(account_id):
 
     if form.validate_on_submit():
         try:
+            category_id = form.category_id.data
+            if form.new_category.data:
+                new_category_name = form.new_category.data
+                existing_category = Category.query.filter_by(name=new_category_name, user_id=current_user.id).first()
+                if existing_category:
+                    flash('Essa categoria já existe.', 'warning')
+                    category_id = existing_category.id
+                else:
+                    new_category = Category(name=new_category_name, user_id=current_user.id)
+                    db.session.add(new_category)
+                    db.session.flush()
+                    category_id = new_category.id
+                    flash(f'Nova categoria "{new_category_name}" criada com sucesso!', 'success')
+
             new_transaction = Transaction(
                 description=form.description.data,
                 amount=form.amount.data,
                 type=form.type.data,
                 account_id=account.id,
-                category_id=form.category_id.data
+                category_id=category_id
             )
             db.session.add(new_transaction)
             db.session.flush()
