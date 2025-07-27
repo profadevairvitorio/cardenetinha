@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-6">
+                    <h3 class="card-title text-center mb-4">Nova Categoria</h3>
+
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Ex: Alimentação, Transporte") }}
+                            {% for error in form.name.errors %}
+                                <div class="invalid-feedback"><span>{{ error }}</span></div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-grid">
+                           {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
