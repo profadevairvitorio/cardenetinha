@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const incomeData = JSON.parse(document.getElementById('incomeData').textContent);
     const expensesData = JSON.parse(document.getElementById('expensesData').textContent);
+
     function getChartOptions() {
         return {
             scales: {
@@ -33,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
     }
-
 
     var incomeCtx = document.getElementById('incomeChart').getContext('2d');
     var incomeChart = new Chart(incomeCtx, {
