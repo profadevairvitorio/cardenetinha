@@ -62,9 +62,6 @@
     </div>
 </div>
 
-{{ income_by_category|tojson|safe }}
-{{ expenses_by_category|tojson|safe }}
-
 <script id="incomeData" type="application/json">{{ income_by_category|tojson }}</script>
 <script id="expensesData" type="application/json">{{ expenses_by_category|tojson }}</script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

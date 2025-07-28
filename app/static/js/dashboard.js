@@ -1,6 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
     const incomeData = JSON.parse(document.getElementById('incomeData').textContent);
     const expensesData = JSON.parse(document.getElementById('expensesData').textContent);
+    function getChartOptions() {
+        return {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value, index, ticks) {
+                            return new Intl.NumberFormat('pt-BR', {
+                                style: 'currency', currency: 'BRL' }).format(value);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('pt-BR', {
+                                    style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+    }
+
 
     var incomeCtx = document.getElementById('incomeChart').getContext('2d');
     var incomeChart = new Chart(incomeCtx, {
@@ -15,13 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 borderWidth: 1
             }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: getChartOptions()
     });
 
     var expensesCtx = document.getElementById('expensesChart').getContext('2d');
@@ -37,12 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 borderWidth: 1
             }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: getChartOptions()
     });
 });
