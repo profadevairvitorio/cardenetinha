@@ -4,7 +4,7 @@ from sqlalchemy import func, extract, or_
 from datetime import datetime
 
 from app import db
-from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm
+from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm, UpdateProfileForm
 from app.models import Account, Transaction, Category
 
 main_bp = Blueprint('main', __name__)
@@ -255,3 +255,27 @@ def edit_category(category_id):
         form.name.data = category.name
 
     return render_template('category/edit.html', title='Editar Categoria', form=form, category=category)
+
+
+@main_bp.route('/perfil')
+@login_required
+def perfil():
+    return render_template('perfil/index.html', title='Seu Perfil')
+
+
+@main_bp.route('/perfil/edit', methods=['GET', 'POST'])
+@login_required
+def edit_perfil():
+    form = UpdateProfileForm(original_username=current_user.username, original_email=current_user.email)
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        if form.password.data:
+            current_user.set_password(form.password.data)
+        db.session.commit()
+        flash('Seu perfil foi atualizado com sucesso!', 'success')
+        return redirect(url_for('main.perfil'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    return render_template('perfil/edit.html', title='Editar Perfil', form=form)
