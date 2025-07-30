@@ -6,7 +6,6 @@
         <h1>Detalhes da Conta: {{ account.name_account }}</h1>
         <div>
             <a href="{{ url_for('main.edit_account', account_id=account.id) }}" class="btn btn-secondary">Editar Conta</a>
-            <a href="{{ url_for('main.disable_account', account_id=account.id) }}" class="btn btn-danger">Desabilitar Conta</a>
         </div>
     </div>
 
