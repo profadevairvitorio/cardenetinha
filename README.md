@@ -30,7 +30,10 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 -   [x] **Banco de Dados SQLite:** Armazenamento leve e eficiente dos dados do usuário.
 -   [x] **Gestão de Contas:** Crie, edite, desabilite e visualize suas contas financeiras.
 -   [x] **Gestão de Transações:** Registre transações de entrada e saída, com atualização automática do saldo da conta.
--   [x] **Histórico de Transações Paginado:** Visualize o histórico detalhado de transações por conta, com paginação.
+-   [x] **Histórico de Transações Avançado:**
+    -   Visualização detalhada e paginada do histórico de transações por conta.
+    -   Filtros por descrição, categoria e período (data).
+    -   Opção para limpar os filtros aplicados.
 -   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
 -   [x] **Dashboard Interativo:**
     -   Visão geral com total de receitas, despesas e saldo.
