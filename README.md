@@ -26,6 +26,7 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
 ## Funcionalidades
 
 -   [x] **Autenticação de Usuários:** Sistema seguro de registro, login e logout.
+-   [x] **Perfil de Usuário:** Visualize e atualize suas informações, incluindo nome de usuário, e-mail e senha.
 -   [x] **Banco de Dados SQLite:** Armazenamento leve e eficiente dos dados do usuário.
 -   [x] **Gestão de Contas:** Crie, edite, desabilite e visualize suas contas financeiras.
 -   [x] **Gestão de Transações:** Registre transações de entrada e saída, com atualização automática do saldo da conta.
@@ -38,6 +39,7 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
     -   Exibição do saldo global ou por conta selecionada.
 -   [x] **Pesquisa de Transações:**
     -   Busca por descrição, valor ou data no histórico de transações.
+-   [x] **Menu Otimizado:** Navegação mais limpa com um menu dropdown para acesso rápido ao perfil, categorias e logout.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
 
@@ -131,6 +133,9 @@ cardenetinha/
 │       ├── index.html
 │       ├── login.html
 │       ├── register.html
+│       ├── perfil/
+│       │   ├── index.html
+│       │   └── edit.html
 │       ├── account/
 │       │   ├── index.html
 │       │   ├── new.html
