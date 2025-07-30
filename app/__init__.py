@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from datetime import datetime
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -16,6 +17,10 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     login_manager.init_app(app)
+
+    @app.context_processor
+    def inject_year():
+        return {'current_year': datetime.year}
 
     with app.app_context():
         from . import routes
