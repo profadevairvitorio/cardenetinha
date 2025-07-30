@@ -34,14 +34,14 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
     -   Visualização detalhada e paginada do histórico de transações por conta.
     -   Filtros por descrição, categoria e período (data).
     -   Opção para limpar os filtros aplicados.
+-   [x] **Estatísticas Detalhadas:**
+    -   Visualize o total de receitas, despesas e o saldo com base em filtros por conta, categoria e período.
 -   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
 -   [x] **Dashboard Interativo:**
     -   Visão geral com total de receitas, despesas e saldo.
     -   Filtros por mês, ano e conta para análise temporal.
     -   Gráfico de pizza com a distribuição de despesas por categoria.
     -   Exibição do saldo global ou por conta selecionada.
--   [x] **Pesquisa de Transações:**
-    -   Busca por descrição, valor ou data no histórico de transações.
 -   [x] **Menu Otimizado:** Navegação mais limpa com um menu dropdown para acesso rápido ao perfil, categorias e logout.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.

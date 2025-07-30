@@ -298,3 +298,50 @@ def edit_perfil():
         form.username.data = current_user.username
         form.email.data = current_user.email
     return render_template('perfil/edit.html', title='Editar Perfil', form=form)
+
+
+@main_bp.route('/statistics')
+@login_required
+def statistics():
+    accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
+    categories = Category.query.filter_by(user_id=current_user.id).order_by(Category.name).all()
+
+    account_id = request.args.get('account_id', type=int)
+    category_id = request.args.get('category_id', type=int)
+    start_date = request.args.get('start_date', '')
+    end_date = request.args.get('end_date', '')
+
+    query = db.session.query(Transaction).join(Account).filter(Account.user_id == current_user.id)
+
+    if account_id:
+        query = query.filter(Transaction.account_id == account_id)
+
+    if category_id:
+        query = query.filter(Transaction.category_id == category_id)
+
+    if start_date:
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+        query = query.filter(Transaction.date >= start_date_obj)
+
+    if end_date:
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+        query = query.filter(Transaction.date <= end_date_obj)
+
+    total_income = db.session.query(func.sum(Transaction.amount)).filter(Transaction.type == 'entrada', Transaction.id.in_([t.id for t in query.all()])).scalar() or 0
+    total_expenses = db.session.query(func.sum(Transaction.amount)).filter(Transaction.type == 'saida', Transaction.id.in_([t.id for t in query.all()])).scalar() or 0
+
+    balance = total_income - total_expenses
+
+    return render_template(
+        'statistics.html',
+        title='Estatísticas',
+        accounts=accounts,
+        categories=categories,
+        selected_account_id=account_id,
+        selected_category_id=category_id,
+        start_date=start_date,
+        end_date=end_date,
+        total_income=total_income,
+        total_expenses=total_expenses,
+        balance=balance
+    )
