@@ -8,9 +8,30 @@
     </div>
 
     <form method="GET" action="{{ url_for('main.transaction_history', account_id=account.id) }}" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Pesquisar por descrição, valor ou data (YYYY-MM-DD)" value="{{ search_query }}">
-            <button type="submit" class="btn btn-primary">Pesquisar</button>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Pesquisar..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <select name="category_id" class="form-select">
+                    <option value="">Todas as categorias</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == selected_category_id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+            <div class="col-md-1">
+                <a href="{{ url_for('main.transaction_history', account_id=account.id) }}" class="btn btn-secondary w-100">Limpar</a>
+            </div>
         </div>
     </form>
 
@@ -19,6 +40,7 @@
             <thead>
                 <tr>
                     <th scope="col">Descrição</th>
+                    <th scope="col">Categoria</th>
                     <th scope="col" class="text-center">Data</th>
                     <th scope="col" class="text-center">Valor</th>
                 </tr>
@@ -26,7 +48,8 @@
             <tbody>
                 {% for transaction in transactions.items %}
                     <tr>
-                        <td>{{ transaction.description }} ({{ transaction.type }}) - {{ transaction.category.name }}</td>
+                        <td>{{ transaction.description }} ({{ transaction.type }})</td>
+                        <td>{{ transaction.category.name }}</td>
                         <td class="text-center">{{ transaction.date.strftime('%d/%m/%Y %H:%M') }}</td>
                         <td class="text-center">
                             <span class="badge bg-{{ 'success' if transaction.type == 'entrada' else 'danger' }} rounded-pill">
@@ -42,7 +65,7 @@
             <ul class="pagination justify-content-center">
                 {% if transactions.has_prev %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.prev_num, search=search_query) }}">Anterior</a>
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.prev_num, search=search_query, category_id=selected_category_id, start_date=start_date, end_date=end_date) }}">Anterior</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">
@@ -55,7 +78,7 @@
                         {% if transactions.page == page_num %}
                             <li class="page-item active"><a class="page-link" href="#">{{ page_num }}</a></li>
                         {% else %}
-                            <li class="page-item"><a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=page_num, search=search_query) }}">{{ page_num }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=page_num, search=search_query, category_id=selected_category_id, start_date=start_date, end_date=end_date) }}">{{ page_num }}</a></li>
                         {% endif %}
                     {% else %}
                         <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
@@ -64,7 +87,7 @@
 
                 {% if transactions.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.next_num, search=search_query) }}">Próxima</a>
+                        <a class="page-link" href="{{ url_for('main.transaction_history', account_id=account.id, page=transactions.next_num, search=search_query, category_id=selected_category_id, start_date=start_date, end_date=end_date) }}">Próxima</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">
@@ -75,7 +98,7 @@
         </nav>
     {% else %}
         <div class="alert alert-info" role="alert">
-            Nenhuma transação encontrada para esta conta.
+            Nenhuma transação encontrada para os filtros aplicados.
         </div>
     {% endif %}
 </div>
