@@ -20,7 +20,7 @@ def create_app(config_class=Config):
 
     @app.context_processor
     def inject_year():
-        return {'current_year': datetime.year}
+        return {'current_year': datetime.now().year}
 
     with app.app_context():
         from . import routes
