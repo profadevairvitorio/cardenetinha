@@ -139,7 +139,7 @@ cardenetinha/
 │       ├── index.html
 │       ├── login.html
 │       ├── register.html
-│       ├── statistics.html
+│       ├── report.html
 │       ├── perfil/
 │       │   ├── index.html
 │       │   └── edit.html
