@@ -311,6 +311,17 @@ def report():
     form = ReportForm(user=current_user)
     page = request.args.get('page', 1, type=int)
     per_page = 10
+
+    if form.validate_on_submit():
+        start_date = form.start_date.data.strftime('%Y-%m-%d')
+        end_date = form.end_date.data.strftime('%Y-%m-%d')
+        account_id = form.account.data
+        return redirect(url_for('main.report', start_date=start_date, end_date=end_date, account_id=account_id, page=1))
+
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+    account_id_str = request.args.get('account_id')
+
     results = None
     totals = {
         'total_entrada': 0,
@@ -318,10 +329,14 @@ def report():
         'balance': 0
     }
 
-    if form.validate_on_submit():
-        start_date = form.start_date.data
-        end_date = form.end_date.data
-        account_id = form.account.data
+    if start_date_str and end_date_str and account_id_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        account_id = int(account_id_str)
+
+        form.start_date.data = start_date
+        form.end_date.data = end_date
+        form.account.data = account_id
 
         query = db.session.query(
             Category.name,
