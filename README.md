@@ -128,11 +128,14 @@ cardenetinha/
 │   ├── models.py                
 │   ├── routes.py               
 │   ├── forms.py
+│   ├── services/ 
+│   │   ├── __init__.py  
+│   │   └── report_service.py
 │   ├── static/                  
 │   │   ├── css/
 │   │   │   └── style.css
 │   │   └── js/
-│   │       └── detail.js
+│   │       └── detail.js            
 │   └── templates/               
 │       ├── base.html
 │       ├── dashboard.html
