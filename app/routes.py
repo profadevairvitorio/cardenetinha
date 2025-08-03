@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, abort, request
+from flask import Blueprint, render_template, flash, redirect, url_for, abort, request, make_response
 from flask_login import login_required, current_user
-from sqlalchemy import func, extract, or_
+from sqlalchemy import func, extract, or_, case
 from datetime import datetime
+import csv
+import io
 
 from app import db
-from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm, UpdateProfileForm
+from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm, UpdateProfileForm, ReportForm
 from app.models import Account, Transaction, Category
 
 main_bp = Blueprint('main', __name__)
@@ -300,48 +302,93 @@ def edit_perfil():
     return render_template('perfil/edit.html', title='Editar Perfil', form=form)
 
 
-@main_bp.route('/statistics')
+
+
+
+@main_bp.route('/report', methods=['GET', 'POST'])
 @login_required
-def statistics():
-    accounts = Account.query.filter_by(user_id=current_user.id, is_active=True).all()
-    categories = Category.query.filter_by(user_id=current_user.id).order_by(Category.name).all()
+def report():
+    form = ReportForm(user=current_user)
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    results = None
+    totals = {
+        'total_entrada': 0,
+        'total_saida': 0,
+        'balance': 0
+    }
 
-    account_id = request.args.get('account_id', type=int)
-    category_id = request.args.get('category_id', type=int)
-    start_date = request.args.get('start_date', '')
-    end_date = request.args.get('end_date', '')
+    if form.validate_on_submit():
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        account_id = form.account.data
 
-    query = db.session.query(Transaction).join(Account).filter(Account.user_id == current_user.id)
+        query = db.session.query(
+            Category.name,
+            func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0)).label('total_entrada'),
+            func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0)).label('total_saida')
+        ).join(Transaction.category).join(Account).filter(
+            Account.user_id == current_user.id,
+            Transaction.date.between(start_date, end_date)
+        )
 
-    if account_id:
-        query = query.filter(Transaction.account_id == account_id)
+        if account_id != 0:
+            query = query.filter(Account.id == account_id)
 
-    if category_id:
-        query = query.filter(Transaction.category_id == category_id)
+        results_query = query.group_by(Category.name).order_by(Category.name)
+        results = results_query.paginate(page=page, per_page=per_page, error_out=False)
 
-    if start_date:
-        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-        query = query.filter(Transaction.date >= start_date_obj)
+        all_results = results_query.all()
+        total_entrada = sum(r.total_entrada for r in all_results if r.total_entrada)
+        total_saida = sum(r.total_saida for r in all_results if r.total_saida)
+        totals['total_entrada'] = total_entrada
+        totals['total_saida'] = total_saida
+        totals['balance'] = total_entrada - total_saida
 
-    if end_date:
-        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
-        query = query.filter(Transaction.date <= end_date_obj)
+    return render_template('report.html', title='Relatórios', form=form, results=results, totals=totals)
 
-    total_income = db.session.query(func.sum(Transaction.amount)).filter(Transaction.type == 'entrada', Transaction.id.in_([t.id for t in query.all()])).scalar() or 0
-    total_expenses = db.session.query(func.sum(Transaction.amount)).filter(Transaction.type == 'saida', Transaction.id.in_([t.id for t in query.all()])).scalar() or 0
 
-    balance = total_income - total_expenses
+@main_bp.route('/report/download/csv')
+@login_required
+def download_report_csv():
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+    account_id_str = request.args.get('account')
 
-    return render_template(
-        'statistics.html',
-        title='Estatísticas',
-        accounts=accounts,
-        categories=categories,
-        selected_account_id=account_id,
-        selected_category_id=category_id,
-        start_date=start_date,
-        end_date=end_date,
-        total_income=total_income,
-        total_expenses=total_expenses,
-        balance=balance
+    if not all([start_date_str, end_date_str, account_id_str]):
+        flash('Parâmetros inválidos para gerar o relatório.', 'danger')
+        return redirect(url_for('main.report'))
+
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+    account_id = int(account_id_str)
+
+    query = db.session.query(
+        Category.name,
+        func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0)).label('total_entrada'),
+        func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0)).label('total_saida')
+    ).join(Transaction.category).join(Account).filter(
+        Account.user_id == current_user.id,
+        Transaction.date.between(start_date, end_date)
     )
+
+    if account_id != 0:
+        query = query.filter(Account.id == account_id)
+
+    results = query.group_by(Category.name).order_by(Category.name).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Categoria', 'Total Entrada', 'Total Saída', 'Balanço'])
+
+    for r in results:
+        balance = r.total_entrada - r.total_saida
+        writer.writerow([r.name, f'{r.total_entrada:.2f}', f'{r.total_saida:.2f}', f'{balance:.2f}'])
+
+    output.seek(0)
+
+    response = make_response(output.getvalue())
+    response.headers["Content-Disposition"] = f"attachment; filename=relatorio_{start_date.strftime('%Y-%m-%d')}_{end_date.strftime('%Y-%m-%d')}.csv"
+    response.headers["Content-type"] = "text/csv"
+
+    return response
