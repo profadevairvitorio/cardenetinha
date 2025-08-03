@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, abort, request, make_response
 from flask_login import login_required, current_user
-from sqlalchemy import func, extract, or_, case
+from sqlalchemy import func, extract, or_, case, desc
 from datetime import datetime
 import csv
 import io
@@ -334,14 +334,23 @@ def report():
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
         account_id = int(account_id_str)
 
+        if account_id != 0:
+            conta_valida = Account.query.filter_by(id=account_id, user_id=current_user.id).first()
+            if not conta_valida:
+                flash('Acesso negado. A conta solicitada não é válida ou não pertence a você.', 'danger')
+                return redirect(url_for('main.report'))
+
         form.start_date.data = start_date
         form.end_date.data = end_date
         form.account.data = account_id
 
+        total_entrada_expr = func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0))
+        total_saida_expr = func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0))
+
         query = db.session.query(
             Category.name,
-            func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0)).label('total_entrada'),
-            func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0)).label('total_saida')
+            total_entrada_expr.label('total_entrada'),
+            total_saida_expr.label('total_saida')
         ).join(Transaction.category).join(Account).filter(
             Account.user_id == current_user.id,
             Transaction.date.between(start_date, end_date)
@@ -350,7 +359,10 @@ def report():
         if account_id != 0:
             query = query.filter(Account.id == account_id)
 
-        results_query = query.group_by(Category.name).order_by(Category.name)
+        results_query = query.group_by(Category.name) \
+                             .having(total_entrada_expr + total_saida_expr > 0) \
+                             .order_by(desc(total_entrada_expr + total_saida_expr))
+
         results = results_query.paginate(page=page, per_page=per_page, error_out=False)
 
         all_results = results_query.all()
