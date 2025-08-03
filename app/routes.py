@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, abort, request, make_response
 from flask_login import login_required, current_user
-from sqlalchemy import func, extract, or_, case, desc
-from datetime import datetime
+from sqlalchemy import func, extract, or_, case
 import csv
 import io
 
-from app import db
-from app.forms import AccountForm, EditAccountForm, TransactionForm, CategoryForm, UpdateProfileForm, ReportForm
-from app.models import Account, Transaction, Category
+from app.forms import *
+from app.models import *
+from app.services import *
 
 main_bp = Blueprint('main', __name__)
 
@@ -313,64 +312,45 @@ def report():
     per_page = 10
 
     if form.validate_on_submit():
-        start_date = form.start_date.data.strftime('%Y-%m-%d')
-        end_date = form.end_date.data.strftime('%Y-%m-%d')
-        account_id = form.account.data
-        return redirect(url_for('main.report', start_date=start_date, end_date=end_date, account_id=account_id, page=1))
+        return redirect(url_for('main.report',
+                                start_date=form.start_date.data.strftime('%Y-%m-%d'),
+                                end_date=form.end_date.data.strftime('%Y-%m-%d'),
+                                account_id=form.account.data,
+                                page=1))
 
+    results = None
+    totals = {}
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
     account_id_str = request.args.get('account_id')
 
-    results = None
-    totals = {
-        'total_entrada': 0,
-        'total_saida': 0,
-        'balance': 0
-    }
-
     if start_date_str and end_date_str and account_id_str:
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        account_id = int(account_id_str)
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            account_id = int(account_id_str)
 
-        if account_id != 0:
-            conta_valida = Account.query.filter_by(id=account_id, user_id=current_user.id).first()
-            if not conta_valida:
-                flash('Acesso negado. A conta solicitada não é válida ou não pertence a você.', 'danger')
-                return redirect(url_for('main.report'))
+            form.start_date.data = start_date
+            form.end_date.data = end_date
+            form.account.data = account_id
 
-        form.start_date.data = start_date
-        form.end_date.data = end_date
-        form.account.data = account_id
+            report_data = generate_report_data(
+                user_id=current_user.id,
+                start_date=start_date,
+                end_date=end_date,
+                account_id=account_id,
+                page=page,
+                per_page=per_page
+            )
+            results = report_data.get('results')
+            totals = report_data.get('totals', {})
 
-        total_entrada_expr = func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0))
-        total_saida_expr = func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0))
-
-        query = db.session.query(
-            Category.name,
-            total_entrada_expr.label('total_entrada'),
-            total_saida_expr.label('total_saida')
-        ).join(Transaction.category).join(Account).filter(
-            Account.user_id == current_user.id,
-            Transaction.date.between(start_date, end_date)
-        )
-
-        if account_id != 0:
-            query = query.filter(Account.id == account_id)
-
-        results_query = query.group_by(Category.name) \
-                             .having(total_entrada_expr + total_saida_expr > 0) \
-                             .order_by(desc(total_entrada_expr + total_saida_expr))
-
-        results = results_query.paginate(page=page, per_page=per_page, error_out=False)
-
-        all_results = results_query.all()
-        total_entrada = sum(r.total_entrada for r in all_results if r.total_entrada)
-        total_saida = sum(r.total_saida for r in all_results if r.total_saida)
-        totals['total_entrada'] = total_entrada
-        totals['total_saida'] = total_saida
-        totals['balance'] = total_entrada - total_saida
+        except ReportAuthorizationError:
+            flash('Acesso negado. A conta solicitada não é válida ou não pertence a você.', 'danger')
+            return redirect(url_for('main.report'))
+        except ValueError:
+            flash('Formato de data ou conta inválido na URL.', 'warning')
+            return redirect(url_for('main.report'))
 
     return render_template('report.html', title='Relatórios', form=form, results=results, totals=totals)
 
