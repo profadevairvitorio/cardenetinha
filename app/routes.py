@@ -1,12 +1,10 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, abort, request, make_response
+from flask import Blueprint, render_template, flash, redirect, url_for, abort, request, make_response, Response
 from flask_login import login_required, current_user
 from sqlalchemy import func, extract, or_, case
-import csv
-import io
 
 from app.forms import *
 from app.models import *
-from app.services import *
+from app.services.report_service import ReportService
 
 main_bp = Blueprint('main', __name__)
 
@@ -311,6 +309,8 @@ def report():
     page = request.args.get('page', 1, type=int)
     per_page = 10
 
+    report_service = ReportService()
+
     if form.validate_on_submit():
         return redirect(url_for('main.report',
                                 start_date=form.start_date.data.strftime('%Y-%m-%d'),
@@ -329,12 +329,11 @@ def report():
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
             account_id = int(account_id_str)
-
             form.start_date.data = start_date
             form.end_date.data = end_date
             form.account.data = account_id
 
-            report_data = generate_report_data(
+            report_data = report_service.generate_report_data(
                 user_id=current_user.id,
                 start_date=start_date,
                 end_date=end_date,
@@ -345,7 +344,7 @@ def report():
             results = report_data.get('results')
             totals = report_data.get('totals', {})
 
-        except ReportAuthorizationError:
+        except report_service.AuthorizationError:
             flash('Acesso negado. A conta solicitada não é válida ou não pertence a você.', 'danger')
             return redirect(url_for('main.report'))
         except ValueError:
@@ -358,44 +357,39 @@ def report():
 @main_bp.route('/report/download/csv')
 @login_required
 def download_report_csv():
+    report_service = ReportService()
+
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
-    account_id_str = request.args.get('account')
+    account_id_str = request.args.get('account_id')
 
     if not all([start_date_str, end_date_str, account_id_str]):
         flash('Parâmetros inválidos para gerar o relatório.', 'danger')
         return redirect(url_for('main.report'))
 
-    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-    end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-    account_id = int(account_id_str)
+    try:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        account_id = int(account_id_str)
 
-    query = db.session.query(
-        Category.name,
-        func.sum(case((Transaction.type == 'entrada', Transaction.amount), else_=0)).label('total_entrada'),
-        func.sum(case((Transaction.type == 'saida', Transaction.amount), else_=0)).label('total_saida')
-    ).join(Transaction.category).join(Account).filter(
-        Account.user_id == current_user.id,
-        Transaction.date.between(start_date, end_date)
-    )
+        csv_data = report_service.generate_csv_report(
+            user_id=current_user.id,
+            start_date=start_date,
+            end_date=end_date,
+            account_id=account_id
+        )
 
-    if account_id != 0:
-        query = query.filter(Account.id == account_id)
+        return Response(
+            csv_data,
+            mimetype="text/csv",
+            headers={
+                "Content-Disposition": f"attachment;filename=relatorio_{start_date_str}_a_{end_date_str}.csv"
+            }
+        )
 
-    results = query.group_by(Category.name).order_by(Category.name).all()
-
-    output = io.StringIO()
-    writer = csv.writer(output)
-    writer.writerow(['Categoria', 'Total Entrada', 'Total Saída', 'Balanço'])
-
-    for r in results:
-        balance = r.total_entrada - r.total_saida
-        writer.writerow([r.name, f'{r.total_entrada:.2f}', f'{r.total_saida:.2f}', f'{balance:.2f}'])
-
-    output.seek(0)
-
-    response = make_response(output.getvalue())
-    response.headers["Content-Disposition"] = f"attachment; filename=relatorio_{start_date.strftime('%Y-%m-%d')}_{end_date.strftime('%Y-%m-%d')}.csv"
-    response.headers["Content-type"] = "text/csv"
-
-    return response
+    except report_service.AuthorizationError:
+        flash('Acesso negado. A conta solicitada não é válida ou não pertence a você.', 'danger')
+        return redirect(url_for('main.report'))
+    except ValueError:
+        flash('Parâmetros inválidos na URL.', 'danger')
+        return redirect(url_for('main.report'))
