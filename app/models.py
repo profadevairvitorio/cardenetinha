@@ -71,7 +71,6 @@ class Goal(db.Model):
 
     @property
     def current_amount(self):
-        from decimal import Decimal
         return self.account.balance if self.account else Decimal('0.00')
 
     @property
