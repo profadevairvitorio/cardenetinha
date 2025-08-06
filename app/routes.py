@@ -436,14 +436,30 @@ def edit_goal(goal_id):
     goal = db.session.get(Goal, goal_id)
     if goal is None or goal.user_id != current_user.id:
         abort(404)
-    form = GoalForm(obj=goal)
+
+    form = GoalForm()
+
+    form.account.choices = [
+        (acc.id, acc.name_account) for acc in
+        Account.query.filter_by(user_id=current_user.id).order_by(Account.name_account).all()
+    ]
+
     if form.validate_on_submit():
+        selected_account = db.session.get(Account, form.account.data)
+
         goal.name = form.name.data
         goal.target_amount = form.target_amount.data
-        goal.account = form.account.data
+        goal.account = selected_account
+
         db.session.commit()
         flash('Meta atualizada com sucesso!', 'success')
         return redirect(url_for('main.goals'))
+
+    elif request.method == 'GET':
+        form.name.data = goal.name
+        form.target_amount.data = goal.target_amount
+        form.account.data = goal.account.id
+
     return render_template('goal/edit.html', title='Editar Meta', form=form, goal=goal)
 
 @main_bp.route('/goal/delete/<int:goal_id>', methods=['POST'])
