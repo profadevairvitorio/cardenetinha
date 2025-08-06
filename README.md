@@ -35,6 +35,7 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
     -   Filtros por descrição, categoria e período (data).
     -   Opção para limpar os filtros aplicados.
 -   [x] **Gestão de Categorias:** Crie, edite e visualize categorias para suas transações.
+-   [x] **Gestão de Metas:** Defina metas financeiras vinculadas a contas específicas, com acompanhamento automático do progresso percentual.
 -   [x] **Dashboard Interativo:**
     -   Visão geral com total de receitas, despesas e saldo.
     -   Filtros por mês, ano e conta para análise temporal.
@@ -45,7 +46,7 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
     -   Filtre os relatórios por conta específica ou todas as contas.
     -   Visualize os totais de entrada, saída e o balanço do período.
     -   Exporte os relatórios para CSV.
--   [x] **Menu Otimizado:** Navegação mais limpa com um menu dropdown para acesso rápido ao perfil, categorias e logout.
+-   [x] **Menu Otimizado:** Navegação mais limpa com um menu dropdown para acesso rápido ao perfil, categorias, metas e logout.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
 
@@ -59,6 +60,7 @@ O projeto foi construído utilizando as seguintes tecnologias:
     * [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)
     * [Flask-Login](https://flask-login.readthedocs.io/)
     * [Flask-Migrate](https://flask-migrate.readthedocs.io/)
+    * [WTForms-SQLAlchemy](https://wtforms-sqlalchemy.readthedocs.io/)
 * **Banco de Dados:**
     * [SQLite 3](https://www.sqlite.org/index.html)
 * **Frontend:**
@@ -159,8 +161,12 @@ cardenetinha/
 │       ├── perfil/
 │       │   ├── edit.html
 │       │   └── index.html
-│       └── transaction/
-│           ├── history.html
+│       ├── transaction/
+│       │   ├── history.html
+│       │   └── new.html
+│       └── goal/
+│           ├── edit.html
+│           ├── index.html
 │           └── new.html
 ├── migrations/
 │   ├── versions/
