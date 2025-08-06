@@ -3,7 +3,12 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Selec
 from wtforms.fields import DateField
 from wtforms.widgets import ListWidget, CheckboxInput
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional, NumberRange
-from .models import User, Account, Category
+from wtforms_sqlalchemy.fields import QuerySelectField
+from .models import User, Account, Category, Goal
+
+def account_query():
+    from flask_login import current_user
+    return Account.query.filter_by(user_id=current_user.id).all()
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -137,3 +142,9 @@ class ReportForm(FlaskForm):
         if 'user' in kwargs:
             user = kwargs['user']
             self.account.choices = [(0, 'Todas as Contas')] + [(a.id, a.name_account) for a in Account.query.filter_by(user_id=user.id).all()]
+
+class GoalForm(FlaskForm):
+    name = StringField('Nome da Meta', validators=[DataRequired(), Length(min=3, max=120)])
+    target_amount = DecimalField('Valor do Objetivo', places=2, validators=[DataRequired(), NumberRange(min=1)])
+    account = QuerySelectField('Conta Vinculada', query_factory=account_query, get_label='name_account', allow_blank=False, validators=[DataRequired()])
+    submit = SubmitField('Salvar Meta')
