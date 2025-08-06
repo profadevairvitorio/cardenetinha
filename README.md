@@ -58,7 +58,7 @@ O projeto foi construído utilizando as seguintes tecnologias:
     * [Flask](https://flask.palletsprojects.com/)
     * [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)
     * [Flask-Login](https://flask-login.readthedocs.io/)
-    * [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/)
+    * [Flask-Migrate](https://flask-migrate.readthedocs.io/)
 * **Banco de Dados:**
     * [SQLite 3](https://www.sqlite.org/index.html)
 * **Frontend:**
@@ -111,56 +111,69 @@ Antes de começar, você vai precisar ter as seguintes ferramentas instaladas em
     ```
     Abra o arquivo `.env` e preencha as variáveis necessárias, como a `SECRET_KEY`.
 
-5.  **Execute a aplicação:**
+5.  **Execute as migrações do banco de dados:**
+    ```bash
+    flask db upgrade
+    ```
+
+6.  **Execute a aplicação:**
     ```bash
     python run.py
     ```
-    *O banco de dados `site.db` será criado automaticamente na raiz do projeto no primeiro acesso que envolver uma operação de banco de dados.*
 
-6.  **Acesse no seu navegador:**
+7.  **Acesse no seu navegador:**
     Abra seu navegador e vá para `http://127.0.0.1:5000/`.
 
 ## Estrutura do Projeto
+
 ```
 cardenetinha/
-├── app/                
-│   ├── __init__.py              
-│   ├── models.py                
-│   ├── routes.py               
+├── app/
+│   ├── __init__.py
+│   ├── auth.py
 │   ├── forms.py
-│   ├── services/ 
-│   │   ├── __init__.py  
+│   ├── models.py
+│   ├── routes.py
+│   ├── services/
+│   │   ├── __init__.py
 │   │   └── report_service.py
-│   ├── static/                  
+│   ├── static/
 │   │   ├── css/
-│   │   │   └── style.css
 │   │   └── js/
-│   │       └── detail.js            
-│   └── templates/               
+│   └── templates/
 │       ├── base.html
 │       ├── dashboard.html
 │       ├── index.html
 │       ├── login.html
 │       ├── register.html
 │       ├── report.html
-│       ├── perfil/
-│       │   ├── index.html
-│       │   └── edit.html
 │       ├── account/
-│       │   ├── index.html
-│       │   ├── new.html
+│       │   ├── detail.html
 │       │   ├── edit.html
-│       │   └── detail.html
+│       │   ├── index.html
+│       │   └── new.html
 │       ├── category/
 │       │   ├── edit.html
 │       │   ├── index.html
 │       │   └── new.html
+│       ├── perfil/
+│       │   ├── edit.html
+│       │   └── index.html
 │       └── transaction/
-│           └── history.html
-├── venv/                        
-├── .gitignore                   
-├── requirements.txt             
-└── run.py                       
+│           ├── history.html
+│           └── new.html
+├── migrations/
+│   ├── versions/
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── README
+│   └── script.py.mako
+├── .gitignore
+├── config.py
+├── LICENSE
+├── README.md
+├── requirements.txt
+└── run.py
 ```
 
 ## Como Contribuir
