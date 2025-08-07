@@ -84,7 +84,7 @@ Antes de começar, você vai precisar ter as seguintes ferramentas instaladas em
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/seu-usuario/cardenetinha.git](https://github.com/seu-usuario/cardenetinha.git)
+    git clone https://github.com/profadevairvitorio/cardenetinha.git
     cd cardenetinha
     ```
 
