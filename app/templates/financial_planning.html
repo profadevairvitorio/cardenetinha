@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Planejamento Financeiro</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPlanItemModal">
+            Adicionar Lançamento
+        </button>
+    </div>
+
+    <form method="GET" action="{{ url_for('main.financial_planning') }}" class="row g-3 mb-4 align-items-end bg-light p-3 rounded">
+        <div class="col-md-4">
+            <label for="month" class="form-label">Mês</label>
+            <select name="month" id="month" class="form-select">
+                {% for month_num, month_name in months %}
+                    <option value="{{ month_num }}" {% if month_num == month %}selected{% endif %}>{{ month_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="year" class="form-label">Ano</label>
+            <input type="number" name="year" id="year" value="{{ year }}" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-success w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Entradas Planejadas</div>
+                <div class="card-body">
+                    <h5 class="card-title">R$ {{ "%.2f"|format(total_income) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Despesas Planejadas</div>
+                <div class="card-body">
+                    <h5 class="card-title">R$ {{ "%.2f"|format(total_expense) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white {% if balance >= 0 %}bg-info{% else %}bg-warning{% endif %} mb-3">
+                <div class="card-header">Balanço do Mês</div>
+                <div class="card-body">
+                    <h5 class="card-title">R$ {{ "%.2f"|format(balance) }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="planningTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="true">Entradas</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false">Despesas</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="planningTabContent">
+        <div class="tab-pane fade show active" id="income" role="tabpanel" aria-labelledby="income-tab">
+            {% with items=income_items %}
+                {% include 'financial_planning/_items_table.html' %}
+            {% endwith %}
+        </div>
+        <div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+            {% with items=expense_items %}
+                {% include 'financial_planning/_items_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="addPlanItemModal" tabindex="-1" aria-labelledby="addPlanItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPlanItemModalLabel">Adicionar Item ao Planejamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('main.financial_planning') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.amount.label(class="form-label") }}
+                        {{ form.amount(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.type.label(class="form-label") }}
+                        {{ form.type(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.plan_date.label(class="form-label") }}
+                        {{ form.plan_date(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.category_id.label(class="form-label") }}
+                        {{ form.category_id(class="form-control") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

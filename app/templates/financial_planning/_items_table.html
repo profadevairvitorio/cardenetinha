@@ -1,0 +1,73 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Categoria</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.description }}</td>
+                <td>R$ {{ "%.2f"|format(item.amount) }}</td>
+                <td>{{ item.category.name }}</td>
+                <td>{{ item.plan_date.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editPlanItemModal-{{ item.id }}">
+                        Editar
+                    </button>
+                    <form action="{{ url_for('main.delete_plan_item', item_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+
+            <div class="modal fade" id="editPlanItemModal-{{ item.id }}" tabindex="-1" aria-labelledby="editPlanItemModalLabel-{{ item.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editPlanItemModalLabel-{{ item.id }}">Editar Item do Planejamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ url_for('main.edit_plan_item', item_id=item.id) }}">
+                                {{ form.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ form.description.label(class="form-label") }}
+                                    {{ form.description(class="form-control", value=item.description) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.amount.label(class="form-label") }}
+                                    {{ form.amount(class="form-control", value=item.amount) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.type.label(class="form-label") }}
+                                    {{ form.type(class="form-control", value=item.type) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.plan_date.label(class="form-label") }}
+                                    {{ form.plan_date(class="form-control", value=item.plan_date.strftime('%Y-%m-%d')) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form.category_id.label(class="form-label") }}
+                                    {{ form.category_id(class="form-control", default=item.category_id) }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    {{ form.submit(class="btn btn-primary", value="Salvar Alterações") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
