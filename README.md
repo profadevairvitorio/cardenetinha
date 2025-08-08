@@ -46,6 +46,11 @@ A ideia do **Cardenetinha** nasceu da necessidade de uma ferramenta simples, por
     -   Filtre os relatórios por conta específica ou todas as contas.
     -   Visualize os totais de entrada, saída e o balanço do período.
     -   Exporte os relatórios para CSV.
+-   [x] **Planejamento Financeiro:**
+    -   Adicione despesas e receitas futuras para planejar o mês.
+    -   Visualize o balanço mensal projetado (entradas vs. despesas).
+    -   Edite e exclua itens do planejamento.
+    -   Interface com abas para melhor organização.
 -   [x] **Menu Otimizado:** Navegação mais limpa com um menu dropdown para acesso rápido ao perfil, categorias, metas e logout.
 -   [ ] **(Planejado) Categorização Inteligente:** Sugestão de categorias para novas transações.
 -   [ ] **(Planejado) Metas e Orçamentos:** Definição de metas de economia e acompanhamento de orçamentos mensais.
@@ -149,6 +154,7 @@ cardenetinha/
 │       ├── login.html
 │       ├── register.html
 │       ├── report.html
+│       ├── financial_planning.html
 │       ├── account/
 │       │   ├── detail.html
 │       │   ├── edit.html
@@ -164,10 +170,12 @@ cardenetinha/
 │       ├── transaction/
 │       │   ├── history.html
 │       │   └── new.html
-│       └── goal/
-│           ├── edit.html
-│           ├── index.html
-│           └── new.html
+│       ├── goal/
+│       │   ├── edit.html
+│       │   ├── index.html
+│       │   └── new.html
+│       └── financial_planning/
+│           └── _items_table.html
 ├── migrations/
 │   ├── versions/
 │   ├── alembic.ini
