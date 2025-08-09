@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Suas Contas</h1>
-        <a href="{{ url_for('main.new_account') }}" class="btn btn-primary">Adicionar Nova Conta</a>
+        <a href="{{ url_for('account.new_account') }}" class="btn btn-primary">Adicionar Nova Conta</a>
     </div>
 
     {% if accounts %}
@@ -12,15 +12,15 @@
             {% for account in accounts %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <a href="{{ url_for('main.account_detail', account_id=account.id) }}" class="text-decoration-none text-dark">
+                        <a href="{{ url_for('account.account_detail', account_id=account.id) }}" class="text-decoration-none text-dark">
                             <div class="card-body">
                                 <h5 class="card-title">{{ account.name_account }}</h5>
                                 <p class="card-text">Saldo: R$ {{ "%.2f"|format(account.balance) }}</p>
                             </div>
                         </a>
                         <div class="card-footer d-flex justify-content-end gap-2">
-                            <a href="{{ url_for('main.edit_account', account_id=account.id) }}" class="btn btn-secondary btn-sm">Editar</a>
-                            <a href="{{ url_for('main.disable_account', account_id=account.id) }}" class="btn btn-danger btn-sm">Desabilitar</a>
+                            <a href="{{ url_for('account.edit_account', account_id=account.id) }}" class="btn btn-secondary btn-sm">Editar</a>
+                            <a href="{{ url_for('account.disable_account', account_id=account.id) }}" class="btn btn-danger btn-sm">Desabilitar</a>
                         </div>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
         </div>
     {% else %}
         <div class="alert alert-info" role="alert">
-            Você ainda não tem nenhuma conta cadastrada. <a href="{{ url_for('main.new_account') }}">Crie uma agora!</a>
+            Você ainda não tem nenhuma conta cadastrada. <a href="{{ url_for('account.new_account') }}">Crie uma agora!</a>
         </div>
     {% endif %}
 </div>
