@@ -3,10 +3,12 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-4">Minhas Metas</h1>
-    <a href="{{ url_for('goal.new_goal') }}" class="btn btn-primary mb-3">Nova Meta</a>
-    <div class="row">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#goalModal" data-url="{{ url_for('goal.new_goal') }}">
+        Nova Meta
+    </button>
+    <div class="row" id="goals-list">
         {% for goal in goals %}
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6 mb-4" id="goal-{{ goal.id }}">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ goal.name }}</h5>
@@ -20,7 +22,9 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ url_for('goal.edit_goal', goal_id=goal.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#goalModal" data-url="{{ url_for('goal.edit_goal', goal_id=goal.id) }}">
+                            Editar
+                        </button>
                         <form action="{{ url_for('goal.delete_goal', goal_id=goal.id) }}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esta meta?');">Excluir</button>
                         </form>
@@ -29,10 +33,28 @@
             </div>
         </div>
         {% else %}
-        <div class="col">
-            <p>Você ainda não tem nenhuma meta cadastrada. <a href="{{ url_for('goal.new_goal') }}">Crie sua primeira meta!</a></p>
+        <div class="col" id="no-goals-message">
+            <p>Você ainda não tem nenhuma meta cadastrada. <a href="#" data-bs-toggle="modal" data-bs-target="#goalModal" data-url="{{ url_for('goal.new_goal') }}">Crie sua primeira meta!</a></p>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<div class="modal fade" id="goalModal" tabindex="-1" role="dialog" aria-labelledby="goalModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="goalModalLabel">Meta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/goal_modal.js') }}"></script>
 {% endblock %}
