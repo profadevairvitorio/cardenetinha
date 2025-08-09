@@ -138,23 +138,59 @@ cardenetinha/
 ├── app/
 │   ├── __init__.py
 │   ├── auth.py
-│   ├── forms.py
-│   ├── models.py
-│   ├── routes.py
+│   ├── forms/
+│   │   ├── __init__.py
+│   │   ├── account_form.py
+│   │   ├── category_form.py
+│   │   ├── edit_account_form.py
+│   │   ├── financial_plan_form.py
+│   │   ├── goal_form.py
+│   │   ├── login_form.py
+│   │   ├── registration_form.py
+│   │   ├── report_form.py
+│   │   ├── transaction_form.py
+│   │   └── update_profile_form.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── account.py
+│   │   ├── category.py
+│   │   ├── financial_plan.py
+│   │   ├── goal.py
+│   │   ├── transaction.py
+│   │   └── user.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── account_routes.py
+│   │   ├── category_routes.py
+│   │   ├── dependencies.py
+│   │   ├── financial_planning_routes.py
+│   │   ├── goal_routes.py
+│   │   ├── main_routes.py
+│   │   ├── profile_routes.py
+│   │   ├── report_routes.py
+│   │   └── transaction_routes.py
 │   ├── services/
 │   │   ├── __init__.py
 │   │   └── report_service.py
 │   ├── static/
 │   │   ├── css/
+│   │   │   ├── bootstrap.min.css
+│   │   │   ├── select2.min.css
+│   │   │   └── style.css
 │   │   └── js/
+│   │       ├── bootstrap.bundle.min.js
+│   │       ├── dashboard.js
+│   │       ├── detail.js
+│   │       ├── jquery.min.js
+│   │       └── select2.min.js
 │   └── templates/
 │       ├── base.html
 │       ├── dashboard.html
 │       ├── index.html
 │       ├── login.html
+│       ├── financial_planning.html
 │       ├── register.html
 │       ├── report.html
-│       ├── financial_planning.html
 │       ├── account/
 │       │   ├── detail.html
 │       │   ├── edit.html
@@ -164,24 +200,19 @@ cardenetinha/
 │       │   ├── edit.html
 │       │   ├── index.html
 │       │   └── new.html
-│       ├── perfil/
-│       │   ├── edit.html
-│       │   └── index.html
-│       ├── transaction/
-│       │   ├── history.html
-│       │   └── new.html
+│       ├── financial_planning/
+│       │   └── _items_table.html
 │       ├── goal/
 │       │   ├── edit.html
 │       │   ├── index.html
 │       │   └── new.html
-│       └── financial_planning/
-│           └── _items_table.html
+│       ├── perfil/
+│       │   ├── edit.html
+│       │   └── index.html
+│       └── transaction/
+│           ├── history.html
+│           └── new.html
 ├── migrations/
-│   ├── versions/
-│   ├── alembic.ini
-│   ├── env.py
-│   ├── README
-│   └── script.py.mako
 ├── .gitignore
 ├── config.py
 ├── LICENSE
