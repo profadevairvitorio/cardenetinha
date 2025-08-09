@@ -533,8 +533,8 @@ def financial_planning():
         extract('year', FinancialPlan.plan_date) == year
     )
 
-    income_items = base_query.filter_by(type='entrada').all()
-    expense_items = base_query.filter_by(type='despesa').all()
+    income_items = base_query.filter_by(type='entrada').order_by(FinancialPlan.amount.desc()).all()
+    expense_items = base_query.filter_by(type='despesa').order_by(FinancialPlan.amount.desc()).all()
 
     total_income = sum(item.amount for item in income_items)
     total_expense = sum(item.amount for item in expense_items)
