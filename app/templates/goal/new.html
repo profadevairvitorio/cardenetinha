@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Nova Meta</h1>
-    <form method="POST" action="{{ url_for('main.new_goal') }}">
+    <form method="POST" action="{{ url_for('goal.new_goal') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.name.label(class="form-control-label") }}

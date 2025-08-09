@@ -9,7 +9,7 @@
         </button>
     </div>
 
-    <form method="GET" action="{{ url_for('main.financial_planning') }}" class="row g-3 mb-4 align-items-end bg-light p-3 rounded">
+    <form method="GET" action="{{ url_for('financial_planning.financial_planning') }}" class="row g-3 mb-4 align-items-end bg-light p-3 rounded">
         <div class="col-md-4">
             <label for="month" class="form-label">Mês</label>
             <select name="month" id="month" class="form-select">
@@ -86,7 +86,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('main.financial_planning') }}">
+                <form method="POST" action="{{ url_for('financial_planning.financial_planning') }}">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
                         {{ form.description.label(class="form-label") }}

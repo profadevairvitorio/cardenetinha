@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Gerenciar Categorias</h1>
-        <a href="{{ url_for('main.new_category') }}" class="btn btn-primary">Adicionar Nova Categoria</a>
+        <a href="{{ url_for('category.new_category') }}" class="btn btn-primary">Adicionar Nova Categoria</a>
     </div>
 
     {% if categories %}
@@ -12,13 +12,13 @@
             {% for category in categories %}
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     <h5>{{ category.name }}</h5>
-                    <a href="{{ url_for('main.edit_category', category_id=category.id) }}" class="btn btn-secondary btn-sm">Editar</a>
+                    <a href="{{ url_for('category.edit_category', category_id=category.id) }}" class="btn btn-secondary btn-sm">Editar</a>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="alert alert-info" role="alert">
-            Nenhuma categoria cadastrada. <a href="{{ url_for('main.new_category') }}">Crie uma agora!</a>
+            Nenhuma categoria cadastrada. <a href="{{ url_for('category.new_category') }}">Crie uma agora!</a>
         </div>
     {% endif %}
 </div>

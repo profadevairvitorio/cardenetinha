@@ -26,11 +26,25 @@ def create_app(config_class=Config):
         return {'current_year': datetime.now().year}
 
     with app.app_context():
-        from . import routes
+        from .routes.main_routes import main_bp
+        from .routes.account_routes import account_bp
+        from .routes.transaction_routes import transaction_bp
+        from .routes.category_routes import category_bp
+        from .routes.profile_routes import profile_bp
+        from .routes.report_routes import report_bp
+        from .routes.goal_routes import goal_bp
+        from .routes.financial_planning_routes import financial_planning_bp
         from . import auth
         from . import models
 
-        app.register_blueprint(routes.main_bp)
+        app.register_blueprint(main_bp)
+        app.register_blueprint(account_bp)
+        app.register_blueprint(transaction_bp)
+        app.register_blueprint(category_bp)
+        app.register_blueprint(profile_bp)
+        app.register_blueprint(report_bp)
+        app.register_blueprint(goal_bp)
+        app.register_blueprint(financial_planning_bp)
         app.register_blueprint(auth.auth_bp)
 
     return app
