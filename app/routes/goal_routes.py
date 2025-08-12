@@ -44,7 +44,7 @@ def edit_goal(goal_id):
     if goal is None or goal.user_id != current_user.id:
         abort(404)
 
-    form = GoalForm(obj=goal)
+    form = GoalForm()
 
     if form.validate_on_submit():
         selected_account = db.session.get(Account, form.account.data)
@@ -58,6 +58,8 @@ def edit_goal(goal_id):
         return jsonify({'success': True, 'message': 'Meta atualizada com sucesso!'})
 
     if request.method == 'GET':
+        form.name.data = goal.name
+        form.target_amount.data = goal.target_amount
         form.account.data = goal.account_id
         return render_template('goal/_goal_form.html', form=form, action_url=url_for('goal.edit_goal', goal_id=goal_id))
 
